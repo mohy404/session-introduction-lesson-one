@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>أساسيات عالم البرمجة: من الهاردوير إلى البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF1EE;
+  --panel:#FFFFFF;
+  --ink:#14181C;
+  --ink-soft:#525B62;
+  --ink-faint:#8A928F;
+  --line:#DADFDA;
+  --line-soft:#E6E9E5;
+
+  --hw:#B8642F;
+  --hw-soft:#F4E4D4;
+  --hw-line:#E4C7A8;
+
+  --sw:#4B4FD1;
+  --sw-soft:#E5E5FB;
+  --sw-line:#C7C8F0;
+
+  --os:#1E8F7F;
+  --os-soft:#DCF2ED;
+  --os-line:#B9E2D8;
+
+  --dark:#10151C;
+  --dark-panel:#161E29;
+  --dark-line:#2A3444;
+  --dark-ink:#E7ECF2;
+  --dark-ink-soft:#9AA7B5;
+
+  --good:#1E8F5C;
+  --good-soft:#DEF2E8;
+  --bad:#C6423D;
+  --bad-soft:#FBE4E2;
+
+  --radius:14px;
+  --radius-sm:9px;
+  --maxw:860px;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
+html{scroll-behavior:smooth;}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto;}
+  *,*::before,*::after{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important;scroll-behavior:auto!important;}
+}
+
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'IBM Plex Sans Arabic',Tahoma,Arial,sans-serif;
+  line-height:1.85;
+  font-size:16.5px;
+  -webkit-font-smoothing:antialiased;
+}
+
+::selection{background:var(--sw-soft);color:var(--sw);}
+
+h1,h2,h3{font-family:'El Messiri',Tahoma,sans-serif;font-weight:700;color:var(--ink);}
+
+.mono{font-family:'IBM Plex Mono',monospace;direction:ltr;unicode-bidi:isolate;}
+
+/* ---------- icons ---------- */
+.icon{width:22px;height:22px;display:inline-block;vertical-align:middle;flex-shrink:0;}
+.icon use, .icon path, .icon circle{fill:none;stroke:currentColor;}
+
+/* ---------- progress bar ---------- */
+.progress-bar{position:fixed;top:0;insetInlineStart:0;left:0;right:0;height:3px;background:transparent;z-index:100;}
+.progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--hw),var(--os),var(--sw));transition:width .1s linear;}
+
+/* ---------- rail nav ---------- */
+.rail{position:fixed;left:22px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:90;}
+.rail-dot{position:relative;width:9px;height:9px;border-radius:50%;background:var(--line);border:none;cursor:pointer;padding:0;transition:background .25s,transform .25s;}
+.rail-dot:hover,.rail-dot:focus-visible{transform:scale(1.35);}
+.rail-dot.active{background:var(--ink);transform:scale(1.35);}
+.rail-dot .tip{position:absolute;insetInlineEnd:calc(100% + 10px);top:50%;transform:translateY(-50%);background:var(--ink);color:#fff;font-size:12px;padding:4px 9px;border-radius:6px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s;}
+.rail-dot:hover .tip,.rail-dot:focus-visible .tip{opacity:1;}
+@media (max-width:900px){.rail{display:none;}}
+
+/* ---------- hero ---------- */
+.hero{
+  padding:76px 24px 56px;
+  text-align:center;
+  background:
+    radial-gradient(circle at 18% 20%, var(--hw-soft) 0%, transparent 38%),
+    radial-gradient(circle at 82% 14%, var(--sw-soft) 0%, transparent 40%),
+    radial-gradient(circle at 50% 90%, var(--os-soft) 0%, transparent 45%);
+}
+.hero-kicker{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'IBM Plex Mono',monospace;direction:ltr;
+  font-size:12.5px;letter-spacing:.06em;color:var(--ink-soft);
+  background:var(--panel);border:1px solid var(--line);
+  padding:6px 14px;border-radius:999px;margin-bottom:22px;
+}
+.hero-kicker .dot{width:6px;height:6px;border-radius:50%;background:var(--os);}
+.hero h1{font-size:clamp(28px,5vw,46px);line-height:1.3;max-width:820px;margin:0 auto 16px;}
+.hero h1 .accent-hw{color:var(--hw);}
+.hero h1 .accent-sw{color:var(--sw);}
+.hero-sub{font-size:clamp(15px,2vw,18px);color:var(--ink-soft);max-width:600px;margin:0 auto 30px;}
+.hero-meta{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;}
+.hero-meta span{
+  font-size:13px;color:var(--ink-soft);background:var(--panel);
+  border:1px solid var(--line);padding:6px 13px;border-radius:999px;
+}
+
+/* ---------- sections ---------- */
+main{padding:0 24px;}
+.lesson-section{padding:64px 0;border-top:1px solid var(--line-soft);}
+.lesson-section:first-of-type{border-top:none;}
+.section-inner{max-width:var(--maxw);margin:0 auto;}
+
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease;}
+.reveal.in-view{opacity:1;transform:translateY(0);}
+
+.eyebrow{
+  display:inline-flex;align-items:center;gap:9px;
+  font-size:13px;color:var(--ink-faint);margin-bottom:14px;
+}
+.eyebrow-num{
+  font-family:'IBM Plex Mono',monospace;direction:ltr;
+  background:var(--ink);color:#fff;font-size:11px;
+  padding:2px 7px;border-radius:5px;
+}
+
+h2{font-size:clamp(22px,3.4vw,30px);margin-bottom:18px;line-height:1.4;}
+h2 .tag{padding:0 2px;}
+.tag.hw{color:var(--hw);}
+.tag.sw{color:var(--sw);}
+.tag.os{color:var(--os);}
+
+.lead{font-size:17px;color:var(--ink-soft);margin-bottom:26px;max-width:70ch;}
+p{margin-bottom:16px;color:var(--ink-soft);}
+p:last-child{margin-bottom:0;}
+strong{color:var(--ink);font-weight:600;}
+
+.note{
+  font-size:14px;color:var(--ink-faint);border-inline-start:2px dashed var(--line);
+  padding-inline-start:14px;margin:22px 0;
+}
+
+/* ---------- chips ---------- */
+.chip-row{display:flex;flex-wrap:wrap;gap:9px;margin:18px 0;}
+.chip{
+  font-family:'IBM Plex Mono',monospace;direction:ltr;
+  font-size:13.5px;padding:6px 13px;border-radius:8px;border:1px solid transparent;
+  display:inline-flex;align-items:center;
+}
+.chip.hw{background:var(--hw-soft);color:var(--hw);border-color:var(--hw-line);}
+.chip.sw{background:var(--sw-soft);color:var(--sw);border-color:var(--sw-line);}
+.chip.os{background:var(--os-soft);color:var(--os);border-color:var(--os-line);}
+.chip.neutral{background:var(--panel);color:var(--ink-soft);border-color:var(--line);font-family:'IBM Plex Sans Arabic';direction:rtl;}
+
+/* ---------- category grid ---------- */
+.category-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:26px;}
+.category-card{
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px;
+}
+.category-card .icon-wrap{
+  width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+  margin-bottom:14px;
+}
+.category-card.hw .icon-wrap{background:var(--hw-soft);color:var(--hw);}
+.category-card.sw .icon-wrap{background:var(--sw-soft);color:var(--sw);}
+.category-card h3{font-size:16px;margin-bottom:8px;font-family:'IBM Plex Mono',monospace;direction:ltr;text-align:start;}
+.category-card p{font-size:14.5px;margin-bottom:12px;}
+@media (max-width:640px){.category-grid{grid-template-columns:1fr;}}
+
+/* ---------- quick check ---------- */
+.quick-check{
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  margin:24px 0;overflow:hidden;
+}
+.qc-question{
+  width:100%;display:flex;align-items:center;gap:12px;
+  background:transparent;border:none;cursor:pointer;
+  padding:16px 18px;font-family:inherit;font-size:15px;color:var(--ink);text-align:start;
+}
+.qc-icon{
+  flex-shrink:0;width:26px;height:26px;border-radius:50%;
+  background:var(--sw-soft);color:var(--sw);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;
+  transition:transform .3s;
+}
+.quick-check.open .qc-icon{transform:rotate(45deg);background:var(--ink);color:#fff;}
+.qc-answer{
+  max-height:0;opacity:0;overflow:hidden;
+  transition:max-height .35s ease,opacity .3s ease,padding .35s ease;
+  padding:0 18px;font-size:14.5px;color:var(--ink-soft);border-top:1px solid transparent;
+}
+.quick-check.open .qc-answer{max-height:200px;opacity:1;padding:0 18px 18px;border-top:1px solid var(--line-soft);}
+
+/* ---------- mini stack teaser ---------- */
+.mini-stack{max-width:320px;margin:28px auto;display:flex;flex-direction:column;align-items:center;}
+.mini-stack-layer{
+  width:100%;background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  padding:11px 16px;text-align:center;font-family:'IBM Plex Mono',monospace;direction:ltr;
+  font-size:13.5px;color:var(--ink);
+}
+.mini-stack-arrow{color:var(--ink-faint);margin:2px 0;}
+
+/* ---------- distinction ---------- */
+.distinction-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:24px 0;}
+.def-box{border-radius:var(--radius);padding:20px;border:1px solid;}
+.def-box.programming{background:var(--sw-soft);border-color:var(--sw-line);}
+.def-box.software{background:var(--hw-soft);border-color:var(--hw-line);}
+.def-box .k{font-family:'IBM Plex Mono',monospace;direction:ltr;font-size:12.5px;letter-spacing:.04em;margin-bottom:8px;display:block;}
+.def-box.programming .k{color:var(--sw);}
+.def-box.software .k{color:var(--hw);}
+.def-box p{color:var(--ink);font-size:14.5px;margin:0;}
+@media (max-width:640px){.distinction-grid{grid-template-columns:1fr;}}
+
+.statement-box{
+  background:var(--dark);color:var(--dark-ink);border-radius:var(--radius);
+  padding:22px 24px;margin:26px 0;font-size:16px;line-height:1.8;
+}
+.statement-box .mono{color:var(--os);}
+
+/* ---------- analogy ---------- */
+.analogy-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:24px 0;}
+.analogy-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px;text-align:center;}
+.analogy-card .who{font-family:'IBM Plex Mono',monospace;direction:ltr;font-size:12.5px;color:var(--ink-faint);display:block;margin-bottom:8px;}
+.analogy-card b{display:block;margin-bottom:6px;font-size:15px;}
+.analogy-card p{font-size:13.5px;margin:0;}
+@media (max-width:640px){.analogy-grid{grid-template-columns:1fr;}}
+
+/* ---------- flow horizontal ---------- */
+.flow-horizontal{display:flex;align-items:center;gap:10px;overflow-x:auto;padding:8px 2px 18px;margin:22px 0;}
+.flow-step{
+  flex:0 0 auto;background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:14px 18px;text-align:center;min-width:118px;
+}
+.flow-step .fs-icon{width:30px;height:30px;border-radius:8px;background:var(--os-soft);color:var(--os);display:flex;align-items:center;justify-content:center;margin:0 auto 8px;}
+.flow-step .fs-label{font-family:'IBM Plex Mono',monospace;direction:ltr;font-size:12.5px;color:var(--ink);display:block;}
+.flow-step .fs-sub{font-size:11.5px;color:var(--ink-faint);margin-top:3px;}
+.flow-arrow{flex:0 0 auto;color:var(--ink-faint);width:18px;height:18px;transform:rotate(90deg);}
+
+.flow-example{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:14px 0 20px;}
+.flow-example .chip{margin:0;}
+.flow-example .flow-arrow{width:14px;height:14px;}
+
+/* ---------- steps vertical ---------- */
+.steps-vertical{margin:26px 0;}
+.step-item{display:flex;gap:16px;padding-bottom:20px;position:relative;}
+.step-item:not(:last-child)::before{
+  content:"";position:absolute;insetInlineStart:15px;top:34px;bottom:0;width:1px;background:var(--line);
+}
+.step-num{
+  flex-shrink:0;width:32px;height:32px;border-radius:50%;background:var(--panel);border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;
+  font-size:12.5px;color:var(--ink-soft);z-index:1;
+}
+.step-text{padding-top:5px;font-size:15px;color:var(--ink);}
+
+/* ---------- code block ---------- */
+.code-block{
+  background:var(--dark);border-radius:var(--radius);padding:18px 20px;margin:20px 0;
+  font-family:'IBM Plex Mono',monospace;direction:ltr;text-align:left;font-size:13.5px;
+  color:var(--dark-ink-soft);overflow-x:auto;
+}
+.code-block .cmt{color:#6B7688;}
+.code-block .kw{color:#7AA2F7;}
+.code-block .val{color:#9ECE6A;}
+.code-block .lbl{color:#E0AF68;}
+.code-block-cap{font-size:12px;color:var(--ink-faint);margin-bottom:8px;font-family:'IBM Plex Sans Arabic';text-align:start;direction:rtl;}
+
+/* ---------- business scenario ---------- */
+.scenario-card{
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 22px;margin:22px 0;
+}
+.scenario-card .sc-k{font-family:'IBM Plex Mono',monospace;direction:ltr;font-size:12px;color:var(--bad);display:block;margin-bottom:8px;}
+.scenario-card p{color:var(--ink);margin:0;font-size:15px;}
+
+.result-list{display:flex;flex-wrap:wrap;gap:9px;margin:18px 0 4px;}
+.result-list span{
+  font-size:13.5px;background:var(--good-soft);color:var(--good);border:1px solid #BEE6D2;
+  padding:6px 13px;border-radius:999px;
+}
+
+.quote-box{
+  border-inline-start:3px solid var(--ink);background:var(--panel);border:1px solid var(--line);
+  border-inline-start-width:3px;border-inline-start-color:var(--sw);
+  border-radius:0 var(--radius) var(--radius) 0;padding:20px 22px;margin:26px 0;font-size:16px;color:var(--ink);
+}
+html[dir="rtl"] .quote-box{border-radius:var(--radius) 0 0 var(--radius);}
+
+/* ---------- example flow (input/processing/output) ---------- */
+.example-flow{display:flex;gap:14px;margin:24px 0;flex-wrap:wrap;}
+.ef-box{flex:1;min-width:180px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px;}
+.ef-box .ef-k{font-family:'IBM Plex Mono',monospace;direction:ltr;font-size:12px;letter-spacing:.05em;color:var(--ink-faint);display:block;margin-bottom:8px;}
+.ef-box p{margin:0;font-size:14.5px;color:var(--ink);}
+.ef-box.in{border-top:3px solid var(--hw);}
+.ef-box.proc{border-top:3px solid var(--os);}
+.ef-box.out{border-top:3px solid var(--sw);}
+
+/* ---------- big picture panel ---------- */
+.bigpicture-panel{
+  background:var(--dark);border-radius:20px;padding:34px 18px 26px;margin:30px 0 10px;
+}
+.stack-wrap{max-width:420px;margin:0 auto;}
+.stack-layer{
+  opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease;
+  background:var(--dark-panel);border:1px solid var(--dark-line);border-radius:12px;
+  padding:13px 16px;display:flex;align-items:center;gap:12px;
+}
+.stack-layer.in-view{opacity:1;transform:translateY(0);}
+.stack-layer .sl-icon{
+  flex-shrink:0;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.06);color:var(--dark-ink);
+}
+.stack-layer .sl-text{flex:1;}
+.stack-layer .sl-en{font-family:'IBM Plex Mono',monospace;direction:ltr;font-size:13.5px;color:var(--dark-ink);display:block;}
+.stack-layer .sl-ar{font-size:12px;color:var(--dark-ink-soft);margin-top:2px;}
+.stack-connector{display:flex;justify-content:center;color:var(--dark-line);margin:2px 0;width:16px;height:16px;margin-inline:auto;}
+.bp-caption{text-align:center;color:var(--dark-ink-soft);font-size:12.5px;margin-top:20px;}
+
+/* ---------- summary grid ---------- */
+.summary-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:24px 0;}
+.summary-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px;}
+.summary-card h3{font-size:15px;font-family:'IBM Plex Mono',monospace;direction:ltr;margin-bottom:8px;}
+.summary-card p{font-size:13.5px;margin:0;}
+@media (max-width:640px){.summary-grid{grid-template-columns:1fr;}}
+
+.key-message{
+  background:var(--ink);color:#fff;border-radius:var(--radius);padding:22px 24px;margin:16px 0;font-size:16px;line-height:1.8;
+}
+.key-message .mono{color:#8FE3D0;}
+
+/* ---------- quiz ---------- */
+.quiz-summary{
+  position:sticky;top:10px;z-index:10;
+  display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
+  background:var(--panel);border:1px solid var(--line);border-radius:999px;
+  padding:10px 18px;margin-bottom:24px;font-size:13.5px;color:var(--ink-soft);
+}
+.quiz-summary b{color:var(--ink);font-family:'IBM Plex Mono',monospace;}
+.quiz-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:22px;margin-bottom:16px;}
+.q-type{
+  display:inline-block;font-size:11.5px;padding:3px 10px;border-radius:999px;margin-bottom:12px;
+  background:var(--sw-soft);color:var(--sw);
+}
+.q-text{font-size:15.5px;color:var(--ink);margin-bottom:16px;}
+.q-num{font-family:'IBM Plex Mono',monospace;color:var(--ink-faint);margin-inline-end:6px;}
+.q-options{display:flex;flex-direction:column;gap:9px;}
+.q-option{
+  text-align:start;background:var(--bg);border:1px solid var(--line);border-radius:10px;
+  padding:12px 14px;font-family:inherit;font-size:14.5px;color:var(--ink);cursor:pointer;transition:background .2s,border-color .2s;
+}
+.q-option:hover:not(:disabled){border-color:var(--ink-faint);}
+.q-option:focus-visible{outline:2px solid var(--sw);outline-offset:2px;}
+.q-option.correct{background:var(--good-soft);border-color:var(--good);color:var(--good);font-weight:600;}
+.q-option.wrong{background:var(--bad-soft);border-color:var(--bad);color:var(--bad);}
+.q-option:disabled{cursor:default;}
+.q-feedback{margin-top:12px;font-size:13.5px;color:var(--ink-soft);padding-top:12px;border-top:1px solid var(--line-soft);display:none;}
+.q-feedback.show{display:block;}
+
+.quiz-final{
+  display:none;text-align:center;background:var(--panel);border:1px solid var(--line);
+  border-radius:var(--radius);padding:32px 22px;margin-top:8px;
+}
+.quiz-final.show{display:block;}
+.quiz-final .score-num{font-family:'El Messiri';font-size:44px;font-weight:700;}
+.quiz-final p{max-width:46ch;margin:10px auto 20px;}
+.reset-btn{
+  background:var(--ink);color:#fff;border:none;padding:11px 24px;border-radius:999px;
+  font-family:inherit;font-size:14px;cursor:pointer;
+}
+.reset-btn:hover{opacity:.85;}
+
+/* ---------- footer ---------- */
+.site-footer{max-width:var(--maxw);margin:0 auto;padding:20px 24px 80px;text-align:center;}
+.site-footer .fdone{
+  font-family:'IBM Plex Mono',monospace;direction:ltr;font-size:12.5px;color:var(--os);
+  background:var(--os-soft);border:1px solid var(--os-line);padding:6px 16px;border-radius:999px;display:inline-block;margin-bottom:18px;
+}
+.site-footer p{color:var(--ink-soft);max-width:52ch;margin:0 auto;}
+
+@media (max-width:640px){
+  .hero{padding:56px 18px 40px;}
+  .lesson-section{padding:46px 0;}
+}
+</style>
+</head>
+<body>
+
+<svg style="display:none" aria-hidden="true">
+<defs>
+<symbol id="i-chip" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><rect x="9" y="9" width="6" height="6" rx="1" stroke-width="1.6"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3" stroke-width="1.6" stroke-linecap="round"/></symbol>
+<symbol id="i-layers" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="4.4" rx="1.2" stroke-width="1.6"/><rect x="5" y="10" width="14" height="4.4" rx="1.2" stroke-width="1.6"/><rect x="5" y="16" width="14" height="4.4" rx="1.2" stroke-width="1.6"/></symbol>
+<symbol id="i-input" viewBox="0 0 24 24"><path d="M3 12h11" stroke-width="1.6" stroke-linecap="round"/><path d="M10 7l5 5-5 5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 5v14" stroke-width="1.6" stroke-linecap="round"/></symbol>
+<symbol id="i-output" viewBox="0 0 24 24"><path d="M4 5v14" stroke-width="1.6" stroke-linecap="round"/><path d="M9 12h11" stroke-width="1.6" stroke-linecap="round"/><path d="M15 7l5 5-5 5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-wifi" viewBox="0 0 24 24"><circle cx="12" cy="18.6" r="1" fill="currentColor" stroke="none"/><path d="M8.2 15.2a6 6 0 0 1 7.6 0" stroke-width="1.6" stroke-linecap="round"/><path d="M4.9 11.4a11 11 0 0 1 14.2 0" stroke-width="1.6" stroke-linecap="round"/></symbol>
+<symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2" stroke-width="1.6"/><path d="M12 3v3.2M12 17.8V21M21 12h-3.2M6.2 12H3M18.4 5.6l-2.3 2.3M7.9 16.1l-2.3 2.3M18.4 18.4l-2.3-2.3M7.9 7.9 5.6 5.6" stroke-width="1.6" stroke-linecap="round"/></symbol>
+<symbol id="i-window" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2" stroke-width="1.6"/><path d="M4 9.4h16" stroke-width="1.6"/></symbol>
+<symbol id="i-brackets" viewBox="0 0 24 24"><path d="M9.5 6 4.5 12l5 6" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.5 6l5 6-5 6" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-flow" viewBox="0 0 24 24"><circle cx="6" cy="6" r="1.8" stroke-width="1.6"/><circle cx="6" cy="18" r="1.8" stroke-width="1.6"/><circle cx="18" cy="12" r="1.8" stroke-width="1.6"/><path d="M7.6 6.9 16.4 11M7.6 17.1 16.4 13" stroke-width="1.6" stroke-linecap="round"/></symbol>
+<symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.5" stroke-width="1.6"/><circle cx="12" cy="12" r="3.6" stroke-width="1.6"/><circle cx="12" cy="12" r="0.7" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-flag" viewBox="0 0 24 24"><path d="M6 3v18" stroke-width="1.6" stroke-linecap="round"/><path d="M6 4.5h11l-2.6 3.5L17 11.5H6" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</defs>
+</svg>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+<nav class="rail" id="rail" aria-label="التنقل بين أقسام الدرس"></nav>
+
+<header class="hero">
+  <span class="hero-kicker"><span class="dot"></span>Lesson 01 · مقدمة عالم البرمجة</span>
+  <h1>افهم <span class="accent-hw">Hardware</span> و<span class="accent-sw">Software</span>، قبل ما تكتب سطر كود واحد</h1>
+  <p class="hero-sub">درس تأسيسي بسيط وعملي هيبني عندك صورة كاملة وصح عن عالم الكمبيوتر، وهيوريك فين بالظبط بتقع البرمجة في النص ده كله.</p>
+  <div class="hero-meta">
+    <span>⏱ حوالي 12 دقيقة</span>
+    <span>🎯 مستوى مبتدئ تمامًا</span>
+    <span>✅ بدون خبرة سابقة</span>
+  </div>
+</header>
+
+<main>
+
+<section class="lesson-section" id="sec-intro">
+  <div class="section-inner reveal">
+    <span class="eyebrow"><span class="eyebrow-num">01</span>قبل ما تبدأ</span>
+    <h2>قبل ما تتعلم البرمجة... افهم جهازك الأول</h2>
+    <p class="lead">لما تفتح الكمبيوتر وتكتب أول برنامج، إيه اللي بيحصل جوه الجهاز أصلًا؟ الإجابة أبسط مما تتخيل: أي جهاز رقمي بيقوم على عنصرين أساسيين بس، وكل حاجة تانية هتتعلمها بعد كده بتترتب عليهم.</p>
+    <div class="mini-stack">
+      <div class="mini-stack-layer chip hw" style="width:100%;justify-content:center;">Hardware</div>
+      <div class="mini-stack-arrow">+</div>
+      <div class="mini-stack-layer chip sw" style="width:100%;justify-content:center;">Software</div>
+    </div>
+    <p>في الأقسام الجاية هنفهم كل واحد فيهم لوحده، وبعدين هنشوف إزاي بيشتغلوا مع بعض، وأخيرًا هنوصل لأهم سؤال: <strong>فين بالظبط بتقع البرمجة في النص ده كله؟</strong></p>
+  </div>
+</section>
+
+<section class="lesson-section" id="sec-hardware">
+  <div class="section-inner reveal">
+    <span class="eyebrow"><span class="eyebrow-num">02</span>Hardware</span>
+    <h2>ما هو <span class="tag hw">Hardware</span>؟</h2>
+    <p class="lead"><strong>Hardware</strong> هو كل جزء مادي في جهازك — أي حاجة تقدر تشوفها بعينك أو تمسكها بإيدك. هو الجزء اللي بينفذ العمليات فعليًا، وبيخزن بياناتك، وبيستقبل أوامرك، وبيطلعلك النتيجة قدامك.</p>
+    <div class="chip-row">
+      <span class="chip hw">CPU</span><span class="chip hw">RAM</span><span class="chip hw">Motherboard</span>
+      <span class="chip hw">SSD</span><span class="chip hw">HDD</span><span class="chip hw">GPU</span>
+      <span class="chip hw">Monitor</span><span class="chip hw">Keyboard</span><span class="chip hw">Mouse</span>
+      <span class="chip hw">Printer</span><span class="chip hw">Network Card</span>
+    </div>
+
+    <div class="quick-check">
+      <button class="qc-question" type="button">
+        <span class="qc-icon">؟</span>
+        <span>هل الـ CPU من الـ Hardware ولا الـ Software؟</span>
+      </button>
+      <div class="qc-answer">الـ CPU من الـ Hardware، لأنه جزء مادي جوه جهازك تقدر تلمسه فعليًا — وهو المسؤول عن تنفيذ العمليات.</div>
+    </div>
+
+    <h3 style="font-family:'El Messiri';font-size:19px;margin:34px 0 4px;">أنواع الـ Hardware</h3>
+    <p style="font-size:14.5px;color:var(--ink-faint);">مش هنغوص في تفاصيل هندسية دلوقتي، الهدف بس إنك تبني صورة صح في دماغك.</p>
+
+    <div class="category-grid">
+      <div class="category-card hw">
+        <div class="icon-wrap"><svg class="icon"><use href="#i-chip"></use></svg></div>
+        <h3>Processing</h3>
+        <p>الأجزاء اللي بتنفذ العمليات وتعالج البيانات فعليًا جوه جهازك.</p>
+        <div class="chip-row"><span class="chip hw">CPU</span><span class="chip hw">GPU</span></div>
+      </div>
+      <div class="category-card hw">
+        <div class="icon-wrap"><svg class="icon"><use href="#i-layers"></use></svg></div>
+        <h3>Memory &amp; Storage</h3>
+        <p>الـ Memory (زي RAM) بتخزن البيانات مؤقتًا وقت التشغيل بس، أما الـ Storage (زي SSD وHDD) فبتخزن بياناتك بشكل دائم حتى لو قفلت الجهاز.</p>
+        <div class="chip-row"><span class="chip hw">RAM</span><span class="chip hw">SSD</span><span class="chip hw">HDD</span></div>
+      </div>
+      <div class="category-card hw">
+        <div class="icon-wrap"><svg class="icon"><use href="#i-input"></use></svg></div>
+        <h3>Input Devices</h3>
+        <p>الأجهزة اللي بتدخل بيها بيانات أو أوامر للجهاز.</p>
+        <div class="chip-row"><span class="chip hw">Keyboard</span><span class="chip hw">Mouse</span><span class="chip hw">Microphone</span><span class="chip hw">Camera</span></div>
+      </div>
+      <div class="category-card hw">
+        <div class="icon-wrap"><svg class="icon"><use href="#i-output"></use></svg></div>
+        <h3>Output Devices</h3>
+        <p>الأجهزة اللي بيطلعلك بيها الجهاز النتيجة قدامك.</p>
+        <div class="chip-row"><span class="chip hw">Monitor</span><span class="chip hw">Speakers</span><span class="chip hw">Printer</span></div>
+      </div>
+      <div class="category-card hw" style="grid-column:1/-1;">
+        <div class="icon-wrap"><svg class="icon"><use href="#i-wifi"></use></svg></div>
+        <h3>Networking Hardware</h3>
+        <p>الأجهزة اللي بتوصّل جهازك بالإنترنت أو بأجهزة تانية.</p>
+        <div class="chip-row"><span class="chip hw">Network Card</span><span class="chip hw">Router</span><span class="chip hw">Wi-Fi Adapter</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section" id="sec-software">
+  <div class="section-inner reveal">
+    <span class="eyebrow"><span class="eyebrow-num">03</span>Software</span>
+    <h2>طيب.. إيه هو <span class="tag sw">Software</span>؟</h2>
+    <p class="lead"><strong>Software</strong> هو مجموعة البرامج والتعليمات اللي بتقول للـ Hardware يعمل إيه، وإزاي ينفذ المهمة المطلوبة. عكس الـ Hardware تمامًا، الـ Software مش حاجة مادية — منفعش تلمسه، بس تقدر تشغّله وتستخدمه.</p>
+    <div class="chip-row">
+      <span class="chip sw">Windows</span><span class="chip sw">Linux</span><span class="chip sw">Android</span>
+      <span class="chip sw">Chrome</span><span class="chip sw">Photoshop</span><span class="chip sw">Microsoft Word</span>
+      <span class="chip sw">Games</span><span class="chip sw">Web Applications</span><span class="chip sw">Mobile Applications</span>
+    </div>
+
+    <div class="quick-check">
+      <button class="qc-question" type="button">
+        <span class="qc-icon">؟</span>
+        <span>هل تقدر تلمس الـ Software زي ما تلمس الـ CPU؟</span>
+      </button>
+      <div class="qc-answer">لأ. Windows مثلًا Software — تقدر تستخدمه وتشغّله، بس مش جسم مادي تقدر تمسكه بإيدك زي الـ Hardware.</div>
+    </div>
+
+    <h3 style="font-family:'El Messiri';font-size:19px;margin:34px 0 20px;">أنواع الـ Software</h3>
+    <div class="category-grid">
+      <div class="category-card sw">
+        <div class="icon-wrap"><svg class="icon"><use href="#i-gear"></use></svg></div>
+        <h3>System Software</h3>
+        <p>البرمجيات المسؤولة عن تشغيل الجهاز وإدارته، وتجهيز البيئة اللي البرامج التانية هتشتغل فوقيها.</p>
+        <div class="chip-row"><span class="chip sw">Operating Systems</span><span class="chip sw">Device Drivers</span><span class="chip sw">System Utilities</span></div>
+      </div>
+      <div class="category-card sw">
+        <div class="icon-wrap"><svg class="icon"><use href="#i-window"></use></svg></div>
+        <h3>Application Software</h3>
+        <p>البرامج اللي إنت بتستخدمها فعليًا عشان تنجز مهمة معينة.</p>
+        <div class="chip-row"><span class="chip sw">Browsers</span><span class="chip sw">Word Processors</span><span class="chip sw">Design Software</span><span class="chip sw">Games</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section" id="sec-where">
+  <div class="section-inner reveal">
+    <span class="eyebrow"><span class="eyebrow-num">04</span>أين البرمجة؟</span>
+    <h2>طيب.. البرمجة فين بالظبط في الصورة دي؟</h2>
+    <p class="lead">البرمجة مش طبقة منفصلة قايمة بذاتها — هي بتقع جوه عالم <span class="mono">Software Development</span>. المبرمج بيكتب التعليمات والمنطق، وده بيتحول في الآخر لـ Software شغّال فعليًا على جهازك.</p>
+
+    <div class="mini-stack">
+      <div class="mini-stack-layer">Hardware</div>
+      <svg class="icon mini-stack-arrow" style="width:14px;height:14px;"><use href="#i-chevron"></use></svg>
+      <div class="mini-stack-layer">Operating System</div>
+      <svg class="icon mini-stack-arrow" style="width:14px;height:14px;"><use href="#i-chevron"></use></svg>
+      <div class="mini-stack-layer">Software</div>
+      <svg class="icon mini-stack-arrow" style="width:14px;height:14px;"><use href="#i-chevron"></use></svg>
+      <div class="mini-stack-layer">Applications</div>
+    </div>
+
+    <div class="statement-box">
+      <span class="mono">Programming</span> هي واحدة من أهم الأدوات اللي بنستخدمها عشان نبني الـ Software — <strong>مش هي الـ Software نفسه.</strong>
+    </div>
+
+    <div class="distinction-grid">
+      <div class="def-box programming">
+        <span class="k">Programming</span>
+        <p>عملية كتابة وتصميم واختبار التعليمات والمنطق.</p>
+      </div>
+      <div class="def-box software">
+        <span class="k">Software</span>
+        <p>المنتج أو النظام البرمجي الناتج، اللي بيؤدي وظيفة معينة فعليًا.</p>
+      </div>
+    </div>
+
+    <div class="quick-check">
+      <button class="qc-question" type="button">
+        <span class="qc-icon">؟</span>
+        <span>أين تقع البرمجة داخل عالم Software؟</span>
+      </button>
+      <div class="qc-answer">البرمجة هي الأداة اللي بنستخدمها عشان نبني الـ Software، مش الـ Software نفسه ولا مرادف ليه.</div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section" id="sec-os">
+  <div class="section-inner reveal">
+    <span class="eyebrow"><span class="eyebrow-num">05</span>Operating System</span>
+    <h2>إيه هو <span class="tag os">نظام التشغيل</span>؟</h2>
+    <p class="lead">نظام التشغيل (<span class="mono">Operating System</span>) هو البرنامج الأساسي اللي بيدير موارد جهازك، وبيوفر البيئة اللازمة عشان باقي البرامج تشتغل، وبيتفاهم مع الـ Hardware نيابة عنها.</p>
+
+    <p style="font-size:15px;color:var(--ink);margin-top:26px;">تخيل جهازك شركة صغيرة:</p>
+    <div class="analogy-grid">
+      <div class="analogy-card">
+        <span class="who mono">Hardware</span>
+        <b>الموظفين والمعدات</b>
+        <p>المبنى والأدوات والناس اللي بينفذوا الشغل فعليًا.</p>
+      </div>
+      <div class="analogy-card">
+        <span class="who mono">Applications</span>
+        <b>الأقسام</b>
+        <p>الأقسام اللي بتقدم الخدمات المختلفة للعملاء.</p>
+      </div>
+      <div class="analogy-card">
+        <span class="who mono">Operating System</span>
+        <b>المدير</b>
+        <p>اللي بينظم استخدام الموارد ويوجّه شغل الكل.</p>
+      </div>
+    </div>
+    <p class="note">التشبيه ده للتقريب بس، مش تعريف تقني دقيق.</p>
+  </div>
+</section>
+
+<section class="lesson-section" id="sec-bridge">
+  <div class="section-inner reveal">
+    <span class="eyebrow"><span class="eyebrow-num">06</span>حلقة الوصل</span>
+    <h2>نظام التشغيل = حلقة الوصل</h2>
+    <p class="lead">الـ Application مش بيتكلم مع الـ Hardware مباشرة في كل عملية. غالبًا بيعتمد على نظام التشغيل عشان يدير الموارد ويتواصل مع مكونات الجهاز نيابة عنه.</p>
+
+    <div class="flow-horizontal">
+      <div class="flow-step"><div class="fs-icon"><svg class="icon"><use href="#i-window"></use></svg></div><span class="fs-label">Application</span></div>
+      <svg class="icon flow-arrow"><use href="#i-chevron"></use></svg>
+      <div class="flow-step"><div class="fs-icon"><svg class="icon"><use href="#i-gear"></use></svg></div><span class="fs-label">Operating System</span></div>
+      <svg class="icon flow-arrow"><use href="#i-chevron"></use></svg>
+      <div class="flow-step"><div class="fs-icon"><svg class="icon"><use href="#i-chip"></use></svg></div><span class="fs-label">Hardware</span></div>
+    </div>
+
+    <p style="font-size:14.5px;color:var(--ink);margin-top:28px;">لما برنامج يطلب يشغّل صوت مثلًا:</p>
+    <div class="flow-example">
+      <span class="chip sw">Application</span>
+      <svg class="icon flow-arrow"><use href="#i-chevron"></use></svg>
+      <span class="chip os">Operating System</span>
+      <svg class="icon flow-arrow"><use href="#i-chevron"></use></svg>
+      <span class="chip hw">Audio Driver</span>
+      <svg class="icon flow-arrow"><use href="#i-chevron"></use></svg>
+      <span class="chip hw">Speaker</span>
+    </div>
+
+    <p style="font-size:14.5px;color:var(--ink);">ولما تدوس على لوحة المفاتيح:</p>
+    <div class="flow-example">
+      <span class="chip hw">Keyboard</span>
+      <svg class="icon flow-arrow"><use href="#i-chevron"></use></svg>
+      <span class="chip os">Operating System</span>
+      <svg class="icon flow-arrow"><use href="#i-chevron"></use></svg>
+      <span class="chip sw">Application تستقبل الحرف</span>
+    </div>
+
+    <div class="quick-check">
+      <button class="qc-question" type="button">
+        <span class="qc-icon">؟</span>
+        <span>هل Chrome نظام تشغيل؟</span>
+      </button>
+      <div class="qc-answer">لأ، Chrome برنامج Application Software بيشتغل فوق نظام التشغيل — مش نظام تشغيل في حد ذاته.</div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section" id="sec-os-types">
+  <div class="section-inner reveal">
+    <span class="eyebrow"><span class="eyebrow-num">07</span>أنواع الأنظمة</span>
+    <h2>أشهر أنواع أنظمة التشغيل</h2>
+    <div class="category-grid">
+      <div class="category-card os">
+        <h3 style="margin-top:2px;">Desktop</h3>
+        <div class="chip-row"><span class="chip os">Windows</span><span class="chip os">macOS</span><span class="chip os">Linux</span></div>
+      </div>
+      <div class="category-card os">
+        <h3 style="margin-top:2px;">Mobile</h3>
+        <div class="chip-row"><span class="chip os">Android</span><span class="chip os">iOS</span></div>
+      </div>
+      <div class="category-card os">
+        <h3 style="margin-top:2px;">Server</h3>
+        <div class="chip-row"><span class="chip os">Linux distributions</span><span class="chip os">Windows Server</span></div>
+      </div>
+      <div class="category-card os">
+        <h3 style="margin-top:2px;">Embedded</h3>
+        <p style="font-size:13.5px;">تستخدم في السيارات، أجهزة الـ IoT، الأجهزة الذكية، والأنظمة الصناعية.</p>
+      </div>
+    </div>
+
+    <div class="quick-check">
+      <button class="qc-question" type="button">
+        <span class="qc-icon">؟</span>
+        <span>هل Android نظام تشغيل؟</span>
+      </button>
+      <div class="qc-answer">أيوه، Android نظام تشغيل مخصص للموبايلات والأجهزة اللوحية.</div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section" id="sec-who">
+  <div class="section-inner reveal">
+    <span class="eyebrow"><span class="eyebrow-num">08</span>من يبنيها؟</span>
+    <h2>طيب.. مين اللي بيطوّر الأنظمة دي؟</h2>
+    <p class="lead">تطوير أنظمة التشغيل والبرمجيات الكبيرة بيتم بواسطة فرق متخصصة، ممكن تشمل:</p>
+    <div class="chip-row">
+      <span class="chip neutral">Software Engineers</span><span class="chip neutral">System Programmers</span>
+      <span class="chip neutral">Operating Systems Engineers</span><span class="chip neutral">Kernel Developers</span>
+      <span class="chip neutral">Embedded Systems Engineers</span><span class="chip neutral">Security Engineers</span>
+    </div>
+    <p style="margin-top:22px;">وإنت كطالب بتتعلم البرمجة، هتقدر بعدين تتخصص في مجالات مختلفة زي:</p>
+    <div class="chip-row">
+      <span class="chip sw">Web Development</span><span class="chip sw">Mobile Development</span>
+      <span class="chip sw">Backend Development</span><span class="chip sw">Desktop Development</span>
+      <span class="chip sw">Game Development</span><span class="chip sw">Embedded Systems</span>
+      <span class="chip sw">Systems Programming</span><span class="chip sw">Cybersecurity</span>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section" id="sec-programming">
+  <div class="section-inner reveal">
+    <span class="eyebrow"><span class="eyebrow-num">09</span>Programming</span>
+    <h2>طيب.. إيه هي <span class="tag sw">البرمجة</span> بالظبط؟</h2>
+
+    <div class="quote-box">
+      البرمجة هي عملية كتابة تعليمات وأوامر باستخدام لغة برمجة، عشان الكمبيوتر ينفذ مهمة أو مجموعة مهام.
+    </div>
+    <p>التعريف ده صح.. بس لوحده <strong>مش كفاية</strong> عشان تفهم البرمجة فهم حقيقي.</p>
+
+    <div class="statement-box">
+      البرمجة هي <strong>تحويل مشكلة أو هدف</strong> إلى خطوات منطقية قابلة للتنفيذ بواسطة الكمبيوتر.
+    </div>
+
+    <p style="margin-top:28px;">المبرمج مش بيبدأ دايمًا بكتابة الكود. هو بيفكر الأول:</p>
+    <div class="steps-vertical">
+      <div class="step-item"><span class="step-num">01</span><span class="step-text">ما المشكلة؟</span></div>
+      <div class="step-item"><span class="step-num">02</span><span class="step-text">ما المطلوب تحقيقه؟</span></div>
+      <div class="step-item"><span class="step-num">03</span><span class="step-text">ما البيانات المتاحة؟</span></div>
+      <div class="step-item"><span class="step-num">04</span><span class="step-text">ما القواعد والشروط؟</span></div>
+      <div class="step-item"><span class="step-num">05</span><span class="step-text">ما الخطوات المنطقية للحل؟</span></div>
+      <div class="step-item"><span class="step-num">06</span><span class="step-text">إزاي نحول الخطوات دي لـ Algorithm؟</span></div>
+      <div class="step-item"><span class="step-num">07</span><span class="step-text">إزاي نحول الـ Algorithm لـ Code؟</span></div>
+      <div class="step-item"><span class="step-num">08</span><span class="step-text">إزاي نختبر الحل؟</span></div>
+      <div class="step-item"><span class="step-num">09</span><span class="step-text">إزاي نحسّنه ونطوّره؟</span></div>
+    </div>
+
+    <div class="code-block">
+<div class="code-block-cap">شبه كود (Pseudocode) — مش لغة برمجة حقيقية، بس بيوضح طريقة التفكير</div><span class="cmt">// لسه ماكتبناش أي كود فعلي.. وده متعمد</span>
+<span class="kw">if</span> (المشكلة واضحة) {
+  <span class="lbl">حدد</span>(<span class="val">"المطلوب"</span>);
+  <span class="lbl">صمم</span>(<span class="val">"الخطوات"</span>);
+}
+    </div>
+
+    <div class="quick-check">
+      <button class="qc-question" type="button">
+        <span class="qc-icon">؟</span>
+        <span>هل المبرمج بيبدأ دايمًا بكتابة الكود على طول؟</span>
+      </button>
+      <div class="qc-answer">لأ، المبرمج الحقيقي بيفكر الأول في المشكلة والحل قبل ما يكتب أي سطر كود.</div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section" id="sec-business">
+  <div class="section-inner reveal">
+    <span class="eyebrow"><span class="eyebrow-num">10</span>البرمجة في عالم الأعمال</span>
+    <h2>البرمجة مش بس "أكتب كود عشان أتعلم"</h2>
+    <p class="lead">في الواقع، البرمجة بتُستخدم لبناء حلول لمشاكل حقيقية.</p>
+
+    <div class="statement-box">
+      البرمجة هي استخدام التفكير المنطقي والخوارزميات والبرمجيات لبناء حلول لمشكلات حقيقية — سواء كان الهدف تحسين عملية، توفير وقت، تقليل تكلفة، تقديم خدمة، أو تحقيق عائد مادي.
+    </div>
+
+    <div class="scenario-card">
+      <span class="sc-k">المشكلة</span>
+      <p>شركة عندها موظفين بيسجلوا المبيعات يدويًا، ووقت كبير بيضيع في الحسابات.</p>
+    </div>
+
+    <div class="flow-horizontal">
+      <div class="flow-step"><span class="fs-label" style="font-family:'IBM Plex Sans Arabic';direction:rtl;font-size:13px;">نحلل المشكلة</span></div>
+      <svg class="icon flow-arrow"><use href="#i-chevron"></use></svg>
+      <div class="flow-step"><span class="fs-label" style="font-family:'IBM Plex Sans Arabic';direction:rtl;font-size:13px;">نحدد المطلوب</span></div>
+      <svg class="icon flow-arrow"><use href="#i-chevron"></use></svg>
+      <div class="flow-step"><span class="fs-label" style="font-family:'IBM Plex Sans Arabic';direction:rtl;font-size:13px;">نصمم Logic</span></div>
+      <svg class="icon flow-arrow"><use href="#i-chevron"></use></svg>
+      <div class="flow-step"><span class="fs-label" style="font-family:'IBM Plex Sans Arabic';direction:rtl;font-size:13px;">نكتب Algorithm</span></div>
+      <svg class="icon flow-arrow"><use href="#i-chevron"></use></svg>
+      <div class="flow-step"><span class="fs-label" style="font-family:'IBM Plex Sans Arabic';direction:rtl;font-size:13px;">نبرمج النظام</span></div>
+      <svg class="icon flow-arrow"><use href="#i-chevron"></use></svg>
+      <div class="flow-step"><span class="fs-label" style="font-family:'IBM Plex Sans Arabic';direction:rtl;font-size:13px;">نبني Software</span></div>
+      <svg class="icon flow-arrow"><use href="#i-chevron"></use></svg>
+      <div class="flow-step"><span class="fs-label" style="font-family:'IBM Plex Sans Arabic';direction:rtl;font-size:13px;">نختبره</span></div>
+      <svg class="icon flow-arrow"><use href="#i-chevron"></use></svg>
+      <div class="flow-step"><span class="fs-label" style="font-family:'IBM Plex Sans Arabic';direction:rtl;font-size:13px;">يستخدمه الموظفون</span></div>
+    </div>
+
+    <p style="font-size:14px;color:var(--ink);margin-top:4px;">النتيجة:</p>
+    <div class="result-list">
+      <span>توفير وقت</span><span>تقليل الأخطاء</span><span>تنظيم البيانات</span>
+      <span>تحسين العمل</span><span>زيادة محتملة في الأرباح</span>
+    </div>
+
+    <div class="quote-box">
+      هنا بتظهر القيمة الحقيقية للمبرمج: مش بس في كتابة الكود، لكن في قدرته إنه يحوّل المشكلة لحل قابل للتنفيذ.
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section" id="sec-example">
+  <div class="section-inner reveal">
+    <span class="eyebrow"><span class="eyebrow-num">11</span>مثال بسيط</span>
+    <h2>مثال هيوضحلك الفكرة بسرعة</h2>
+    <p class="lead">صاحب محل عايز يعرف إجمالي مبيعات اليوم أوتوماتيك، من غير ما يجمعها بإيده وهو ممكن يغلط.</p>
+
+    <div class="example-flow">
+      <div class="ef-box in">
+        <span class="ef-k">INPUT</span>
+        <p>أسعار المنتجات وكمياتها</p>
+      </div>
+      <div class="ef-box proc">
+        <span class="ef-k">PROCESSING</span>
+        <p>السعر × الكمية لكل منتج</p>
+      </div>
+      <div class="ef-box out">
+        <span class="ef-k">OUTPUT</span>
+        <p>إجمالي المبيعات</p>
+      </div>
+    </div>
+
+    <div class="code-block">
+<div class="code-block-cap">نفس الفكرة، بس مكتوبة كشبه كود</div><span class="cmt">// input: قائمة المنتجات (سعر، كمية)</span>
+<span class="kw">total</span> = <span class="val">0</span>
+<span class="kw">for each</span> منتج <span class="kw">in</span> القائمة:
+  <span class="kw">total</span> += منتج.<span class="lbl">السعر</span> × منتج.<span class="lbl">الكمية</span>
+<span class="kw">print</span>(<span class="kw">total</span>) <span class="cmt">// output: إجمالي المبيعات</span>
+    </div>
+
+    <p>ودي بالظبط فكرة أي برنامج بسيط: <strong class="mono">Input → Processing → Output</strong>. البرمجة هي اللي بتحدد إزاي هيحصل التحويل من مرحلة للتانية.</p>
+  </div>
+</section>
+
+<section class="lesson-section" id="sec-bigpicture">
+  <div class="section-inner reveal">
+    <span class="eyebrow"><span class="eyebrow-num">12</span>الصورة الكبيرة</span>
+    <h2>دلوقتي.. خلينا نجمع كل حاجة في صورة واحدة</h2>
+    <p class="lead">الخريطة دي مش تسلسل تقني لازم يحصل بالظبط بالترتيب ده في كل مرة — هي <strong>Mental Model تعليمية</strong> بس، بتساعدك تفهم العلاقة بين كل المفاهيم اللي اتعلمناها.</p>
+
+    <div class="bigpicture-panel">
+      <div class="stack-wrap" id="stackWrap">
+        <div class="stack-layer" data-i="1"><div class="sl-icon"><svg class="icon"><use href="#i-chip"></use></svg></div><div class="sl-text"><span class="sl-en">Hardware</span><span class="sl-ar">الأجزاء المادية للجهاز</span></div></div>
+        <svg class="icon stack-connector"><use href="#i-chevron"></use></svg>
+        <div class="stack-layer" data-i="2"><div class="sl-icon"><svg class="icon"><use href="#i-gear"></use></svg></div><div class="sl-text"><span class="sl-en">Operating System</span><span class="sl-ar">يدير الموارد ويصل بين الطبقات</span></div></div>
+        <svg class="icon stack-connector"><use href="#i-chevron"></use></svg>
+        <div class="stack-layer" data-i="3"><div class="sl-icon"><svg class="icon"><use href="#i-layers"></use></svg></div><div class="sl-text"><span class="sl-en">Software</span><span class="sl-ar">البرامج اللي تعمل فوق النظام</span></div></div>
+        <svg class="icon stack-connector"><use href="#i-chevron"></use></svg>
+        <div class="stack-layer" data-i="4"><div class="sl-icon"><svg class="icon"><use href="#i-window"></use></svg></div><div class="sl-text"><span class="sl-en">Applications</span><span class="sl-ar">البرامج اللي يستخدمها الناس فعليًا</span></div></div>
+        <svg class="icon stack-connector"><use href="#i-chevron"></use></svg>
+        <div class="stack-layer" data-i="5"><div class="sl-icon"><svg class="icon"><use href="#i-brackets"></use></svg></div><div class="sl-text"><span class="sl-en">Programming</span><span class="sl-ar">الأداة اللي نبني بيها الـ Software</span></div></div>
+        <svg class="icon stack-connector"><use href="#i-chevron"></use></svg>
+        <div class="stack-layer" data-i="6"><div class="sl-icon"><svg class="icon"><use href="#i-flow"></use></svg></div><div class="sl-text"><span class="sl-en">Logic + Algorithms + Code</span><span class="sl-ar">التفكير المنطقي مكتوب كخطوات</span></div></div>
+        <svg class="icon stack-connector"><use href="#i-chevron"></use></svg>
+        <div class="stack-layer" data-i="7"><div class="sl-icon"><svg class="icon"><use href="#i-target"></use></svg></div><div class="sl-text"><span class="sl-en">Problem Solving</span><span class="sl-ar">تحويل مشكلة حقيقية إلى حل</span></div></div>
+        <svg class="icon stack-connector"><use href="#i-chevron"></use></svg>
+        <div class="stack-layer" data-i="8"><div class="sl-icon"><svg class="icon"><use href="#i-flag"></use></svg></div><div class="sl-text"><span class="sl-en">Real-World Solutions</span><span class="sl-ar">نتيجة تُستخدم فعليًا في الحياة والأعمال</span></div></div>
+      </div>
+      <p class="bp-caption">مرّر لأسفل ببطء لتشاهد الطبقات وهي تتجمع</p>
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section" id="sec-summary">
+  <div class="section-inner reveal">
+    <span class="eyebrow"><span class="eyebrow-num">13</span>الخلاصة</span>
+    <h2>خلاصة سريعة قبل ما نكمل</h2>
+    <div class="summary-grid">
+      <div class="summary-card"><h3>Hardware</h3><p>الأجزاء المادية اللي يمكن لمسها فعليًا.</p></div>
+      <div class="summary-card"><h3>Software</h3><p>البرامج والتعليمات اللي تعمل على الجهاز.</p></div>
+      <div class="summary-card"><h3>Operating System</h3><p>البرنامج الأساسي اللي يدير موارد الجهاز ويوفر بيئة تشغيل البرامج.</p></div>
+      <div class="summary-card"><h3>Programming</h3><p>تحويل المشكلة أو الهدف إلى منطق وتعليمات قابلة للتنفيذ.</p></div>
+      <div class="summary-card"><h3>Software Development</h3><p>عملية أوسع تشمل تحليل المشكلة والتصميم والبرمجة والاختبار والصيانة.</p></div>
+      <div class="summary-card"><h3>المبرمج</h3><p>ليس مجرد شخص يكتب Code، بل شخص يستخدم التفكير المنطقي لبناء حلول لمشكلات حقيقية.</p></div>
+    </div>
+
+    <div class="key-message">
+      المبرمج ما بيتعلمش البرمجة عشان يكتب <span class="mono">Code</span> بس؛ هو بيتعلم إزاي يحوّل المشاكل لحلول منطقية يقدر الكمبيوتر ينفذها.
+    </div>
+    <div class="key-message">
+      قيمة البرمجة بتظهر لما نستخدمها لبناء حلول حقيقية بتوفر وقت، تقلل تكلفة، تحسّن عملية، تقدّم خدمة، أو تخلق قيمة ممكن تتحول لعائد.
+    </div>
+  </div>
+</section>
+
+<section class="lesson-section" id="sec-quiz">
+  <div class="section-inner reveal">
+    <span class="eyebrow"><span class="eyebrow-num">14</span>اختبر نفسك</span>
+    <h2>10 أسئلة قبل ما تكمل رحلتك</h2>
+    <p class="lead">الأسئلة دي مش لاختبار حفظك — لاختبار فهمك. خد وقتك وفكر في كل سؤال.</p>
+
+    <div class="quiz-summary">
+      <span>أجبت على <b id="answeredCount">0</b> من <b>10</b></span>
+      <span>الإجابات الصحيحة: <b id="correctCount">0</b></span>
+    </div>
+
+    <div id="quizContainer"></div>
+
+    <div class="quiz-final" id="quizFinal">
+      <div class="score-num" id="finalScore">0/10</div>
+      <p id="finalMessage"></p>
+      <button class="reset-btn" id="resetQuiz" type="button">أعد المحاولة</button>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <span class="fdone">lesson · complete</span>
+  <p>خلصنا أساسيات عالم البرمجة. الخطوة الجاية: تبدأ تتعرف على أول لغة برمجة، وتشوف إزاي كل اللي اتعلمته دلوقتي بيتحول لكود حقيقي. 🚀</p>
+</footer>
+
+<script>
+(function(){
+  // ---------- progress bar ----------
+  var fill = document.getElementById('progressFill');
+  function updateProgress(){
+    var h = document.documentElement;
+    var scrolled = h.scrollTop;
+    var max = h.scrollHeight - h.clientHeight;
+    var pct = max > 0 ? (scrolled / max) * 100 : 0;
+    fill.style.width = pct + '%';
+  }
+  document.addEventListener('scroll', updateProgress, {passive:true});
+  updateProgress();
+
+  // ---------- rail nav ----------
+  var sections = [
+    {id:'sec-intro', label:'البداية'},
+    {id:'sec-hardware', label:'Hardware'},
+    {id:'sec-software', label:'Software'},
+    {id:'sec-where', label:'أين البرمجة'},
+    {id:'sec-os', label:'Operating System'},
+    {id:'sec-bridge', label:'حلقة الوصل'},
+    {id:'sec-os-types', label:'أنواع الأنظمة'},
+    {id:'sec-who', label:'من يبنيها'},
+    {id:'sec-programming', label:'Programming'},
+    {id:'sec-business', label:'قيمة الأعمال'},
+    {id:'sec-example', label:'مثال عملي'},
+    {id:'sec-bigpicture', label:'الصورة الكبيرة'},
+    {id:'sec-summary', label:'الخلاصة'},
+    {id:'sec-quiz', label:'اختبار'}
+  ];
+  var rail = document.getElementById('rail');
+  var dots = {};
+  sections.forEach(function(s){
+    var btn = document.createElement('button');
+    btn.className = 'rail-dot';
+    btn.setAttribute('aria-label', s.label);
+    btn.type = 'button';
+    var tip = document.createElement('span');
+    tip.className = 'tip';
+    tip.textContent = s.label;
+    btn.appendChild(tip);
+    btn.addEventListener('click', function(){
+      var el = document.getElementById(s.id);
+      if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+    });
+    rail.appendChild(btn);
+    dots[s.id] = btn;
+  });
+
+  var navObserver = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        Object.keys(dots).forEach(function(id){ dots[id].classList.remove('active'); });
+        if(dots[entry.target.id]) dots[entry.target.id].classList.add('active');
+      }
+    });
+  }, {rootMargin:'-45% 0px -45% 0px'});
+  sections.forEach(function(s){
+    var el = document.getElementById(s.id);
+    if(el) navObserver.observe(el);
+  });
+
+  // ---------- reveal on scroll ----------
+  var revealObserver = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.classList.add('in-view');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, {threshold:0.12});
+  document.querySelectorAll('.reveal').forEach(function(el){ revealObserver.observe(el); });
+
+  // ---------- big picture stack reveal ----------
+  var stackObserver = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        var i = parseInt(entry.target.getAttribute('data-i'), 10) || 1;
+        entry.target.style.transitionDelay = ((i-1) * 90) + 'ms';
+        entry.target.classList.add('in-view');
+        stackObserver.unobserve(entry.target);
+      }
+    });
+  }, {threshold:0.4});
+  document.querySelectorAll('.stack-layer').forEach(function(el){ stackObserver.observe(el); });
+
+  // ---------- quick checks ----------
+  document.querySelectorAll('.quick-check').forEach(function(qc){
+    var btn = qc.querySelector('.qc-question');
+    btn.addEventListener('click', function(){
+      qc.classList.toggle('open');
+    });
+  });
+
+  // ---------- quiz ----------
+  var quizData = [
+    {type:'اختيار من متعدد', q:'أي مما يلي يعتبر Hardware؟', options:['Windows','CPU','Chrome','Photoshop'], correct:1},
+    {type:'صح أم خطأ', q:'نظام التشغيل هو نفسه البرمجة.', options:['صح','خطأ'], correct:1},
+    {type:'اختيار من متعدد', q:'ما الذي يمثل حلقة الوصل بين الـ Hardware والـ Software؟', options:['المتصفح','نظام التشغيل','الطابعة','لوحة المفاتيح'], correct:1},
+    {type:'صح أم خطأ', q:'يمكنك لمس الـ RAM، لكن لا يمكنك لمس نظام التشغيل.', options:['صح','خطأ'], correct:0},
+    {type:'اختيار من متعدد', q:'عندما يطلب برنامج تشغيل صوت، ما المسار الصحيح؟', options:['Application → Speaker مباشرة','Application → Operating System → Hardware','Hardware → Application مباشرة','لا توجد علاقة بينهم'], correct:1},
+    {type:'سيناريو', q:'صاحب محل يريد حساب إجمالي مبيعاته أوتوماتيك بدل الحساب اليدوي. ما هو الـ Input في هذه المشكلة؟', options:['إجمالي المبيعات','أسعار المنتجات وكمياتها','السعر × الكمية','تقرير نهاية اليوم'], correct:1},
+    {type:'اختيار من متعدد', q:'ما التعريف الأعمق للبرمجة؟', options:['كتابة أوامر بلغة برمجة فقط','تحويل مشكلة إلى خطوات منطقية قابلة للتنفيذ','تصميم واجهات فقط','حفظ أوامر الكمبيوتر'], correct:1},
+    {type:'صح أم خطأ', q:'المبرمج يبدأ دائمًا بكتابة الكود مباشرة دون تفكير مسبق.', options:['صح','خطأ'], correct:1},
+    {type:'سيناريو', q:'شركة تريد برنامجًا لحساب رواتب الموظفين تلقائيًا. ما الخطوة الأولى الصحيحة قبل كتابة أي كود؟', options:['فتح محرر الأكواد وكتابة أول سطر','فهم وتحليل المشكلة وتحديد المطلوب','اختيار لغة البرمجة الأسرع','تصميم شعار للبرنامج'], correct:1},
+    {type:'اختيار من متعدد', q:'أين تقع Programming داخل الصورة الكبيرة لعالم الكمبيوتر؟', options:['فوق الـ Hardware مباشرة وقبل نظام التشغيل','إحدى الأدوات المستخدمة لبناء الـ Software','نظام تشغيل مصغر','نوع من أنواع الـ Hardware'], correct:1}
+  ];
+
+  var container = document.getElementById('quizContainer');
+  var answeredSet = {};
+  var correctCountEl = document.getElementById('correctCount');
+  var answeredCountEl = document.getElementById('answeredCount');
+  var quizFinal = document.getElementById('quizFinal');
+  var finalScore = document.getElementById('finalScore');
+  var finalMessage = document.getElementById('finalMessage');
+
+  function buildQuiz(){
+    container.innerHTML = '';
+    answeredSet = {};
+    quizData.forEach(function(item, qi){
+      var card = document.createElement('div');
+      card.className = 'quiz-card';
+
+      var typeEl = document.createElement('span');
+      typeEl.className = 'q-type';
+      typeEl.textContent = item.type;
+      card.appendChild(typeEl);
+
+      var qText = document.createElement('div');
+      qText.className = 'q-text';
+      var numSpan = document.createElement('span');
+      numSpan.className = 'q-num mono';
+      numSpan.textContent = (qi+1) + '.';
+      qText.appendChild(numSpan);
+      qText.appendChild(document.createTextNode(item.q));
+      card.appendChild(qText);
+
+      var optsWrap = document.createElement('div');
+      optsWrap.className = 'q-options';
+
+      var feedback = document.createElement('div');
+      feedback.className = 'q-feedback';
+
+      item.options.forEach(function(opt, oi){
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'q-option';
+        b.textContent = opt;
+        b.addEventListener('click', function(){
+          if(answeredSet[qi] !== undefined) return;
+          answeredSet[qi] = oi;
+          var allBtns = optsWrap.querySelectorAll('.q-option');
+          allBtns.forEach(function(bb, bi){
+            bb.disabled = true;
+            if(bi === item.correct) bb.classList.add('correct');
+            else if(bi === oi) bb.classList.add('wrong');
+          });
+          var isCorrect = (oi === item.correct);
+          feedback.textContent = isCorrect ? 'إجابة صحيحة 👏' : ('إجابة غير دقيقة — الصح هو: ' + item.options[item.correct]);
+          feedback.classList.add('show');
+          updateQuizProgress();
+        });
+        optsWrap.appendChild(b);
+      });
+
+      card.appendChild(optsWrap);
+      card.appendChild(feedback);
+      container.appendChild(card);
+    });
+    updateQuizProgress();
+    quizFinal.classList.remove('show');
+  }
+
+  function updateQuizProgress(){
+    var answered = Object.keys(answeredSet).length;
+    var correct = 0;
+    Object.keys(answeredSet).forEach(function(qi){
+      if(answeredSet[qi] === quizData[qi].correct) correct++;
+    });
+    answeredCountEl.textContent = answered;
+    correctCountEl.textContent = correct;
+    if(answered === quizData.length){
+      finalScore.textContent = correct + '/10';
+      var msg;
+      if(correct >= 9) msg = 'ممتاز! عندك فهم قوي جدًا للأساسيات، وجاهز تمامًا تبدأ في تعلّم لغة برمجة.';
+      else if(correct >= 6) msg = 'جيد جدًا! راجع الأجزاء اللي غلطت فيها في الأعلى، وهتكون جاهز بالكامل.';
+      else msg = 'مفيش مشكلة، ده أول درس بس. رجّع نظرك على الأقسام فوق وجرب الاختبار تاني.';
+      finalMessage.textContent = msg;
+      quizFinal.classList.add('show');
+    }
+  }
+
+  document.getElementById('resetQuiz').addEventListener('click', buildQuiz);
+  buildQuiz();
+})();
+</script>
+
+</body>
+</html>
